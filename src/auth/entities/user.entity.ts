@@ -1,35 +1,30 @@
-import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity("users")
-export class User{
+@Entity('users')
+export class User {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
+
+    @Column({ type: 'varchar', length: 255 })
+    name!: string;
+
+    @Column({ type: 'varchar', length: 255, unique: true })
+    email!: string;
+
+    @Column({type:'varchar',length:255})
+    password!: string;
 
 
-@Column({type:'varchar',length:255})
-name:string;
 
-@Column({type:'varchar',length:255,unique:true})
-email:string;
+    @Column({type:'boolean',default:false})
+    isActive!: boolean;
 
-@Column({type:'varchar',length:255})
-password:string;
+    @Column({ type: 'varchar', nullable: true, length: 255 })
+    mobile?: string;
 
-@Column({type:'varchar',length:255})
-role:string;
+    @CreateDateColumn()
+    createdAt!: Date;
 
-@Column({type:'varchar',length:255})
-bio:string;
-
-@Column({type:'boolean',default:false})
-isActive:Boolean;
-
-  @Column({ type: 'varchar', nullable: true, length: 255 })
-  phoneNumber: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
+    @UpdateDateColumn()
+    updatedAt!: Date;
 }
