@@ -1,11 +1,11 @@
 export class AuthResponseDto{
     id:number;
-    name:string;
+    firstName:string;
+    middleName?:string;
+    lastName:string;
     email:string;
-    role:string;
-    bio:string;
     isActive:Boolean;
-    mobile:string;
+    mobile?:string;
     createdAt: Date;
 }
 

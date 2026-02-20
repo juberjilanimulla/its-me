@@ -3,9 +3,6 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class PasswordUtil{
-    /**
-     * Hash a password using argon2
-     */
     async hashPassword(password:string):Promise<string>{
         try {
             return await argon2.hash(password);
@@ -14,9 +11,6 @@ export class PasswordUtil{
         }
     }
 
-    /**
-     * verify a password using argon2
-     */
     async verifyPassword(password:string, hash:string):Promise<boolean>{
         try {
             return await argon2.verify(hash,password);
@@ -25,4 +19,11 @@ export class PasswordUtil{
             return false;
         }
     }
+}
+
+export const hashPassword = async (password:string):Promise<string>=>{
+    return await argon2.hash(password);
+}
+export const comparePassword = async (password:string,hash:string):Promise<boolean>=>{
+    return await argon2.verify(hash,password);
 }

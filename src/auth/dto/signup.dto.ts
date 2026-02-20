@@ -4,7 +4,17 @@ export class SignupDto {
   @IsString()
   @MinLength(2)
   @MaxLength(50)
-  name: string;
+  firstName: string;
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(50)
+  middleName?: string;
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(50)
+  lastName: string;
 
   @IsEmail()
   email: string;
@@ -16,11 +26,6 @@ export class SignupDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(500)
-  bio?: string;
-
-  @IsOptional()
-  @IsString()
   @MaxLength(20)
-  phoneNumber?: string;
+  mobile?: string;
 }

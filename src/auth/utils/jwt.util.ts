@@ -70,3 +70,11 @@ export class JwtUtil {
     return jwt.sign(payload, this.secret, options);
     }
 }
+export const generateToken = (payload: { id: number; email: string }): string => {
+    const secret = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+    const options: SignOptions = {
+        expiresIn: 86400,
+        issuer: 'its-me-app',
+    };
+    return jwt.sign(payload, secret, options);
+};
