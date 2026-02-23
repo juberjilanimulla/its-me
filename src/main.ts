@@ -2,9 +2,20 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import morgan from 'morgan';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  morgan.token('remote-addr',(req:any)=>{
+    return req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  });
+  app.use(
+     morgan(
+    ':remote-addr - :method :url :status :res[content-length] - :response-time ms'
+  )
+);
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true,

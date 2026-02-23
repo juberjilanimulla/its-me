@@ -15,7 +15,7 @@ export class AuthController {
     }
 
     @Post('login')
-    async login(@Body() LoginDto: LoginDto): Promise<LoginResponseDto> {
-        return this.authService.login(LoginDto);
+    async login(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
+        return this.authService.login(loginDto);
     }
 }
