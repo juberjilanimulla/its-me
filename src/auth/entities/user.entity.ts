@@ -3,16 +3,16 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 @Entity('users')
 export class User {
     @PrimaryGeneratedColumn()
-    id!: number;
+    id: number;
 
     @Column({ type: 'varchar', length: 255 })
-    firstName!: string;
+    firstName: string;
     
     @Column({ type: 'varchar', length: 255 })
-    middleName!: string;
+    middleName: string;
 
     @Column({ type: 'varchar', length: 255 })
-    lastName!: string;
+    lastName: string;
 
     @Column({ type: 'varchar', length: 255, unique: true })
     email!: string;
