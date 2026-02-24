@@ -21,7 +21,7 @@ export class AuthService {
 
         const existingUser = await this.userRepository.findOne({ where: { email } });
         if (existingUser) {
-            throw new ConflictException('Email already registered');
+            throw new ConflictException('Email already registered');   
         }
 
         const hashedPassword = await hashPassword(password);
