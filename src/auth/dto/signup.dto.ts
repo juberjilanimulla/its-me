@@ -1,4 +1,4 @@
-import {IsString,IsEmail,MinLength,MaxLength,IsOptional, IsMobilePhone} from 'class-validator';
+import {IsString,IsEmail,MinLength,MaxLength,IsOptional, IsMobilePhone, length} from 'class-validator';
 
 export class SignupDto {
   @IsString()
@@ -26,4 +26,7 @@ export class SignupDto {
   @IsString()
   @MaxLength(20)
   mobile?: string;
+
+  @IsOptional()
+  mail_verified?: number;
 }

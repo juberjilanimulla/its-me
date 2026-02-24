@@ -25,6 +25,9 @@ export class User {
 
     @Column({ type: 'varchar', nullable: true, length: 255 })
     mobile?: string;
+   
+    @Column({type:'tinyint',default:0})
+     mail_verified!: number;
 
     @CreateDateColumn()
     createdAt!: Date;
