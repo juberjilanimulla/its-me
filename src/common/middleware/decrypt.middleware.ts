@@ -9,9 +9,9 @@ export class DecryptMiddleware implements NestMiddleware {
     try {
       if(process.env.ISENCRYPTED_PAYLOAD === 'true') {
       // Check if encrypted payload exists
-      if (req.body && req.body.payload) {
+      if (req.body && req.body.result) {
 
-        const decryptedData = CryptoUtil.decrypt(req.body.payload);
+        const decryptedData = CryptoUtil.decrypt(req.body.result);
 
         // Replace request body with decrypted data
         req.body = decryptedData;

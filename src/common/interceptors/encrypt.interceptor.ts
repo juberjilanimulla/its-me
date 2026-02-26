@@ -7,7 +7,7 @@ import { CryptoUtil } from '../utils/crypto.util';
 export class EncryptInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    
+
  if (process.env.ISENCRYPTED_PAYLOAD !== 'true') {
       return next.handle(); // Development — return plain JSON
     }
@@ -20,8 +20,10 @@ export class EncryptInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         if (!data) return data;
-        const encrypted = CryptoUtil.encrypt(data);
-        return { payload: encrypted };
+       return {
+          ...data,                                    
+          result: CryptoUtil.encrypt(data.result),  
+        };
       }),
     );
   }

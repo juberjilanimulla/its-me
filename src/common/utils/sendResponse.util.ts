@@ -1,10 +1,10 @@
 export class SendResponseUtil {
-  static success(data: any,message: string = 'Success',statusCode: number = 200) {
+  static success(result: any,message: string = 'Success',statusCode: number = 200) {
     return {
       success: true,
       statusCode,
       message,
-      data,
+      result,
     };
   }
 
@@ -13,7 +13,7 @@ export class SendResponseUtil {
       success: false,
       statusCode,
       message,
-      error:true,
+      result:null,
     };
   }
 }
