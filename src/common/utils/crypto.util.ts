@@ -45,7 +45,7 @@ export class CryptoUtil {
     } catch (error) {
       throw new Error('Decryption failed');
     }
-  } else {
+  } else{
     return data;
   }
 }

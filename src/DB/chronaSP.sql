@@ -5,16 +5,17 @@ DELIMITER $$
 
 DROP PROCEDURE IF EXISTS sp_create_user; $$
 CREATE PROCEDURE sp_create_user(
-    IN p_first_name VARCHAR(255),   
-    IN p_middle_name VARCHAR(255),     
-    IN p_last_name VARCHAR(255),  
+    IN p_firstName VARCHAR(255),   
+    IN p_middleName VARCHAR(255),     
+    IN p_lastName VARCHAR(255),  
     IN p_email VARCHAR(255),
     IN p_password VARCHAR(255),
+    IN p_mobile VARCHAR(20),
     OUT p_insert_id INT
 )
 BEGIN
-    INSERT INTO users ( first_name, middle_name, last_name, email, password)
-    VALUES ( p_first_name, p_middle_name, p_last_name, p_email, p_password);
+    INSERT INTO users ( firstName, middleName, lastName, email, password, mobile)
+    VALUES ( p_firstName, p_middleName, p_lastName, p_email, p_password, p_mobile);
     SET p_insert_id = LAST_INSERT_ID();
 END $$
 
@@ -30,7 +31,7 @@ CREATE PROCEDURE sp_login_user(
     IN p_email VARCHAR(255)
 )
 BEGIN
-    SELECT id,first_name,middle_name,last_name,email,password,mobile,is_active,created_at
+    SELECT id,firstName,middleName,lastName,email,password,mobile,is_active,created_at
     FROM users
     WHERE email = p_email
     LIMIT 1;

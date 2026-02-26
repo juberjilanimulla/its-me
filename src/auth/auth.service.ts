@@ -31,11 +31,12 @@ export class AuthService {
         HttpStatus.CONFLICT,
       );
     }
-        const randomPassword = crypto.randomBytes(6).toString('hex');
+        const randomPassword = crypto.randomBytes(12).toString('hex');
+       
         const hashedPassword = await hashPassword(randomPassword);
 
         await this.userRepository.query(
-      `CALL sp_create_user(?, ?, ?, ?, ?, ?);`,
+      `CALL sp_create_user(?, ?, ?, ?, ?, ?, @p_insert_id);`,
       [firstName, middleName, lastName, email, hashedPassword, mobile],
     );
 
@@ -45,18 +46,17 @@ export class AuthService {
     const insertedId = insertIdResult[0].id;
 
     const token = generateToken({id: insertedId, email});
-   return SendResponseUtil.success({
-       data: { token },
-      message: 'User registered successfully',
-      status: HttpStatus.CREATED,
-    });
+   return SendResponseUtil.success(
+        { token },
+       'User registered successfully',
+       HttpStatus.CREATED,
+    );
     } catch (error:any) {
     return SendResponseUtil.error(
       error.message || 'Internal Server Error',
       HttpStatus.INTERNAL_SERVER_ERROR,
       error,
-    );
-       
+    );  
     }
 }      
 
@@ -89,11 +89,7 @@ export class AuthService {
       id: user.id,
       email: user.email,
     });
-     return SendResponseUtil.success({
-       data: { token },
-      message: 'User logged in successfully',
-      status: HttpStatus.OK,
-    });
+     return SendResponseUtil.success({ token },'User logged in successfully',HttpStatus.OK);
    } catch (error: any) {
     return SendResponseUtil.error(
       error.message || 'Login',

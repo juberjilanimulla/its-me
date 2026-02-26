@@ -20,8 +20,8 @@ export class User {
     @Column({type:'varchar',length:255})
     password!: string;
 
-    @Column({type:'boolean',default:false})
-    isActive!: boolean;
+    @Column({type:'tinyint',default:0})
+    isActive!: number;
 
     @Column({ type: 'varchar', nullable: true, length: 255 })
     mobile?: string;

@@ -7,7 +7,7 @@ import morgan from 'morgan';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.setGlobalPrefix('api');
   morgan.token('remote-addr',(req:any)=>{
     return req.headers['x-forwarded-for'] || req.socket.remoteAddress;
   });

@@ -16,17 +16,15 @@ export class SignupDto {
   @IsEmail()
   email: string;
 
+  @IsOptional()
   @IsString()
-  @MinLength(8)
+  @MinLength(6)
   @MaxLength(50)
-  password: string;
+  password?: string;
 
   @IsMobilePhone()
   @IsOptional()
   @IsString()
   @MaxLength(20)
   mobile?: string;
-
-  @IsOptional()
-  mail_verified?: number;
 }

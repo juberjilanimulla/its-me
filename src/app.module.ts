@@ -1,11 +1,14 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './auth/entities/user.entity';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
+import { EncryptInterceptor } from './common/interceptors/encrypt.interceptor';
+import { DecryptMiddleware } from './common/middleware/decrypt.middleware';
+import { EncryptController } from './common/utils/encrypt.controller';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -23,7 +26,19 @@ import { AppService } from './app.service';
     
     
     AuthModule],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController,EncryptController],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: EncryptInterceptor,
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+    .apply(DecryptMiddleware)
+    .forRoutes('*path');
+  }
+}
