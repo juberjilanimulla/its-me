@@ -36,6 +36,7 @@
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.1",
     "mysql2": "^3.17.2",
+    "nodemailer": "^8.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
@@ -58,6 +59,7 @@
     "@types/morgan": "^1.9.10",
     "@types/ms": "^2.1.0",
     "@types/node": "^22.10.7",
+    "@types/nodemailer": "^7.0.11",
     "@types/qs": "^6.14.0",
     "@types/range-parser": "^1.2.7",
     "@types/send": "^1.2.1",

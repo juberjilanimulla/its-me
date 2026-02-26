@@ -40,12 +40,12 @@ export class AuthService {
       [firstName, middleName, lastName, email, hashedPassword, mobile],
     );
 
-        const insertIdResult = await this.userRepository.query(
+        const result = await this.userRepository.query(
       `SELECT @p_insert_id as id;`,
     );
-    const insertedId = insertIdResult[0].id;
+    const userId = result[0].id;
 
-    const token = generateToken({id: insertedId, email});
+    const token = generateToken({id: userId, email});
    return SendResponseUtil.success(
         { token },
        'User registered successfully',
