@@ -13,7 +13,7 @@ export class SendResponseUtil {
       success: false,
       statusCode,
       message,
-      error,
+      error:true,
     };
   }
 }

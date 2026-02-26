@@ -7,6 +7,9 @@ import { LoginDto } from './dto/login.dto';
 import { LoginResponseDto } from './dto/auth-response.dto';
 import { hashPassword, comparePassword } from '../auth/utils/password.util';  
 import { generateToken } from '../auth/utils/jwt.util';                        
+import * as crypto from 'crypto';
+import { SendResponseUtil } from '../common/utils/sendResponse.util';
+import { HttpStatus } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
@@ -16,22 +19,26 @@ export class AuthService {
         private userRepository: Repository<User>
     ) {}
 
-    async signup(signupDto: SignupDto): Promise<LoginResponseDto> {
-        const { firstName, middleName, lastName, email, password, mobile } = signupDto;
+    async signup(signupDto: SignupDto)
+    {
+        try {
+        const { firstName, middleName, lastName, email, mobile } = signupDto;
 
         const existingUser = await this.userRepository.findOne({ where: { email } });
         if (existingUser) {
-            throw new ConflictException('Email already registered');   
-        }
-
-        const hashedPassword = await hashPassword(password);
+      return SendResponseUtil.error(
+        'Email already registered',
+        HttpStatus.CONFLICT,
+      );
+    }
+        const randomPassword = crypto.randomBytes(6).toString('hex');
+        const hashedPassword = await hashPassword(randomPassword);
 
         const user = this.userRepository.create({
             firstName,
             middleName,
             lastName,
             email,
-            password: hashedPassword,
             mobile,
             isActive: true
         });
@@ -39,22 +46,19 @@ export class AuthService {
         const savedUser = await this.userRepository.save(user);
         const token = generateToken({ id: savedUser.id, email: savedUser.email });
 
-        return {
-            user: {
-                id: savedUser.id,
-                firstName: savedUser.firstName,
-                middleName: savedUser.middleName,
-                lastName: savedUser.lastName,
-                email: savedUser.email,
-                isActive: savedUser.isActive,
-                mobile: savedUser.mobile,
-                createdAt: savedUser.createdAt
-            },
-            accessToken: token,
-            tokenType: 'Bearer',
-            expiresIn: 86400
-        };
+   return SendResponseUtil.success({
+      message: 'User registered successfully',
+      status: HttpStatus.CREATED,
+    });
+    } catch (error:any) {
+    return SendResponseUtil.error(
+      error.message || 'Internal Server Error',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      error,
+    );
+       
     }
+}      
 
     async login(loginDto: LoginDto): Promise<LoginResponseDto> {
         const { email, password } = loginDto;

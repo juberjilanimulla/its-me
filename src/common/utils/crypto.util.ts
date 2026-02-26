@@ -26,11 +26,11 @@ export class CryptoUtil {
   /**
    * Decrypt Data (AES)
    */
-  static decrypt(cipherText: string): any {
-    if(process.env.ISENCRYPTED_PAYLOAD === 'true'){
+  static decrypt(data: string): any {
+    if(process.env.ISENCRYPTED_PAYLOAD === 'true') {
     try {
       const bytes = CryptoJS.AES.decrypt(
-        cipherText,
+        data,
         this.secretKey,
       );
 
@@ -45,6 +45,8 @@ export class CryptoUtil {
     } catch (error) {
       throw new Error('Decryption failed');
     }
+  } else {
+    return data;
   }
 }
 }
