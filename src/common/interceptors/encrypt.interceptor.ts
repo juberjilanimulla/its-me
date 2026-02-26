@@ -7,7 +7,10 @@ import { CryptoUtil } from '../utils/crypto.util';
 export class EncryptInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-
+    
+ if (process.env.ISENCRYPTED_PAYLOAD !== 'true') {
+      return next.handle(); // Development — return plain JSON
+    }
     // 👇 skip encryption for the encrypt utility route
     const request = context.switchToHttp().getRequest();
     if (request.url.includes('/encrypt')) {

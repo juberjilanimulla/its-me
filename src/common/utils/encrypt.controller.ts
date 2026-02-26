@@ -1,9 +1,7 @@
 import { Controller, Post, Body, UseInterceptors } from "@nestjs/common";
 import { CryptoUtil } from "./crypto.util";
-import { NullInterceptor } from "../interceptors/null.interceptor"; 
 
 @Controller('encrypt')
-@UseInterceptors(NullInterceptor) 
 export class EncryptController {
 
   @Post()
