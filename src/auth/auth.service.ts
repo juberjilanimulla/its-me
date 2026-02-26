@@ -34,19 +34,19 @@ export class AuthService {
         const randomPassword = crypto.randomBytes(6).toString('hex');
         const hashedPassword = await hashPassword(randomPassword);
 
-        const user = this.userRepository.create({
-            firstName,
-            middleName,
-            lastName,
-            email,
-            mobile,
-            isActive: true
-        });
+        await this.userRepository.query(
+      `CALL sp_create_user(?, ?, ?, ?, ?, ?);`,
+      [firstName, middleName, lastName, email, hashedPassword, mobile],
+    );
 
-        const savedUser = await this.userRepository.save(user);
-        const token = generateToken({ id: savedUser.id, email: savedUser.email });
+        const insertIdResult = await this.userRepository.query(
+      `SELECT @p_insert_id as id;`,
+    );
+    const insertedId = insertIdResult[0].id;
 
+    const token = generateToken({id: insertedId, email});
    return SendResponseUtil.success({
+       data: { token },
       message: 'User registered successfully',
       status: HttpStatus.CREATED,
     });
@@ -60,35 +60,45 @@ export class AuthService {
     }
 }      
 
-    async login(loginDto: LoginDto): Promise<LoginResponseDto> {
+    async login(loginDto: LoginDto){
         const { email, password } = loginDto;
 
-        const user = await this.userRepository.findOne({ where: { email } });
-        if (!user) {
-            throw new UnauthorizedException('Invalid credentials');
-        }
+       const result = await this.userRepository.query(
+      `CALL sp_login_user(?);`,
+      [email],
+    );
 
-        const isPasswordValid = await comparePassword(password, user.password);
-        if (!isPasswordValid) {
-            throw new UnauthorizedException('Invalid credentials');
-        }
+   const user = result[0][0]; // first row
 
-        const token = generateToken({ id: user.id, email: user.email });
-
-        return {
-            user: {
-                id: user.id,
-                firstName: user.firstName,
-                middleName: user.middleName,
-                lastName: user.lastName,
-                email: user.email,
-                isActive: user.isActive,
-                mobile: user.mobile,
-                createdAt: user.createdAt
-            },
-            accessToken: token,
-            tokenType: 'Bearer',
-            expiresIn: 86400
-        };
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
     }
+
+    // Compare Password (bcrypt)
+    const isPasswordValid = await comparePassword(
+      password,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Generate JWT Token
+    const token = generateToken({
+      id: user.id,
+      email: user.email,
+    });
+     return SendResponseUtil.success({
+       data: { token },
+      message: 'User logged in successfully',
+      status: HttpStatus.OK,
+    });
+   } catch (error: any) {
+    return SendResponseUtil.error(
+      error.message || 'Login',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      error,
+    );
+}
 }

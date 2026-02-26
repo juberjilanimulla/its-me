@@ -19,3 +19,21 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+--create stored procedure for login user
+-- 26/02/2026 - 11:02  --Juber Mulla
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_login_user; $$
+
+CREATE PROCEDURE sp_login_user(
+    IN p_email VARCHAR(255)
+)
+BEGIN
+    SELECT id,first_name,middle_name,last_name,email,password,mobile,is_active,created_at
+    FROM users
+    WHERE email = p_email
+    LIMIT 1;
+END $$
+
+DELIMITER ;
