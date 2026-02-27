@@ -10,13 +10,15 @@ import { generateToken } from '../auth/utils/jwt.util';
 import * as crypto from 'crypto';
 import { SendResponseUtil } from '../common/utils/sendResponse.util';
 import { HttpStatus } from '@nestjs/common';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
 
     constructor(
         @InjectRepository(User)
-        private userRepository: Repository<User>
+        private userRepository: Repository<User>,
+        private mailService:MailService
     ) {}
 
     async signup(signupDto: SignupDto)
@@ -44,8 +46,9 @@ export class AuthService {
       `SELECT @p_insert_id as id;`,
     );
     const userId = result[0].id;
-
+    await this.mailService.sendWelcomeEmail(email,firstName,randomPassword);
     const token = generateToken({id: userId, email});
+    
    return SendResponseUtil.success(
         { token },
        'User registered successfully',
