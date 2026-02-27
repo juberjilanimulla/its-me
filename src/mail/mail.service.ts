@@ -1,24 +1,44 @@
 import {Injectable} from "@nestjs/common"
 import * as nodemailer from 'nodemailer';
-
+import {welcomeUser} from './templates/mail.templates'
 
 @Injectable()
 export class MailService{
     private transporter=nodemailer.createTransport({
-        service:"gmail",
+        host:process.env.MAIL_HOST as string,
+        port:Number(process.env.MAIL_PORT),
+        secure:Number(process.env.MAIL_PORT) === 465, // true for 465, false for other ports
         auth:{
             user:process.env.MAIL_USER,
             pass:process.env.MAIL_PASS,
+        },
+        tls:{
+            rejectUnauthorized: false
         }
     })
+// Common send function - same as your sendMail() is mailUtils.ts
 
-    async sendWelcomeEmail(email:string,firstname:string,password:string){
-        const mailOptions={
-            from:`Chrona Dev <${process.env.MAIL_USER}>`,
-            to:email,
-            subject:'Welcome to Chrona Dev',
-            text:`Hello ${firstname},\n\nWelcome to Chrona Dev! Your account has been created successfully.\n\nYour temporary password is: ${password}\n\nPlease log in and change your password as soon as possible.\n\nBest regards,\nThe Chrona Dev Team`
-        }
-        await this.transporter.sendMail(mailOptions);
+private async sendMail(to:string,subject:string,html:string){
+    try{
+        const info = await this.transporter.sendMail({
+            from:process.env.MAIL_FORM,
+            to,
+            subject,
+            html,
+             replyTo: process.env.MAIL_REPLY
+        });
+        console.log(`Email sent: ${info.messageId}`);
+        return true;
+    }
+    catch(error){
+        console.error('Error sending email:',error);
+        return false;
+    }
+}  
+
+
+    async sendWelcomeEmail(email:string,firstName:string,password:string){
+        const html = welcomeUser({ firstName, email, randomPassword: password });
+    return this.sendMail(email, 'Welcome! Your Account Has Been Created', html);
     }
 }   
